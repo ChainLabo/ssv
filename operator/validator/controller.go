@@ -1457,7 +1457,6 @@ func SetupRunners(
 			CutOffRound: specqbft.Round(specqbft.CutoffRound),
 		}
 		config.ValueCheckF = valueCheckF
-
 		identifier := func() []byte {
 			identifier := spectypes.NewMsgID(options.NetworkConfig.DomainType(), options.SSVShare.Share.ValidatorPubKey[:], role)
 			return identifier[:]

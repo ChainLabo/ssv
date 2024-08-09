@@ -58,7 +58,6 @@ func NewCommitteeObserver(identifier convert.MessageID, opts CommitteeObserverOp
 	}
 
 	// TODO: does the specific operator matters?
-
 	identifierFunc := func() []byte {
 		return identifier[:]
 	}
