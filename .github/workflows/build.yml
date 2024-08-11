@@ -2,9 +2,14 @@ name: Build
 
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - 'v[0-9]+.*'
+  # push:
+  #   tags:
+  #     - 'v[0-9]+.*'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
 
 jobs:
   build:
