@@ -1,0 +1,66 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v[0-9]+.*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        architecture: [amd64, arm64]
+        include:
+          - architecture: amd64
+            runs-on: ubuntu-latest
+          - architecture: arm64
+            runs-on: ubuntu-latest-arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: Build
+        run: make build && mv bin/ssvnode bin/ssvnode-${{ matrix.architecture }}
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: ssvnode-${{ matrix.architecture }}
+          path: bin/ssvnode-${{ matrix.architecture }}
+  release:
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload AMD64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/ssvnode-amd64
+        asset_name: ssvnode-amd64
+        asset_download_url: ${{ steps.create_release.outputs.release_url }}/ssvnode-amd64
+
+    - name: Upload ARM64 binary
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bin/ssvnode-arm64
+        asset_name: ssvnode-arm64
+        asset_download_url: ${{ steps.create_release.outputs.release_url }}/ssvnode-arm64
+
