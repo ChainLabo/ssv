@@ -210,7 +210,7 @@ require (
 	go.uber.org/dig v1.17.0 // indirect
 	go.uber.org/fx v1.19.2 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
-	golang.org/x/net v0.21.0 // indirect
+	golang.org/x/net v0.23.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/term v0.20.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
