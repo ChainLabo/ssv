@@ -45,11 +45,17 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 #
 # STEP 3: Prepare image to run the binary
 #
-FROM gcr.io/distroless/base-debian12 AS runner
+FROM golang:1.20.7 AS runner
+
+RUN apt-get update     && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+  dnsutils=1:9.18.24-1 && \
+  rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
 
-COPY --from=builder /go/bin/ssvnode /ssvnode
+COPY --from=builder /go/bin/ssvnode /go/bin/ssvnode
+COPY ./Makefile .env* ./
 COPY config/* ./config/
 
 # Expose port for load balancing
@@ -58,5 +64,4 @@ EXPOSE 5678 5000 4000/udp
 # Force using Go's DNS resolver because Alpine's DNS resolver (when netdns=cgo) may cause issues.
 ENV GODEBUG="netdns=go"
 
-CMD ["/ssvnode"]
 #ENTRYPOINT ["/go/bin/ssvnode"]
