@@ -3,16 +3,9 @@
 #
 FROM golang:1.22 AS preparer
 
-RUN apt-get update                                                        && \
+RUN apt-get update && apt upgrade -y && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-  curl=7.88.1-10+deb12u8 \
-  git=1:2.39.5-0+deb12u1 \
-  zip=3.0-13 \
-  unzip=6.0-28 \
-  g++=4:12.2.0-3 \
-  gcc-aarch64-linux-gnu=4:12.2.0-3 \
-  bzip2=1.0.8-5+b1 \
-  make=4.3-4.1 \
+  make curl git zip unzip wget dnsutils g++ gcc-aarch64-linux-gnu                 \
   && rm -rf /var/lib/apt/lists/*
 
 RUN go version
